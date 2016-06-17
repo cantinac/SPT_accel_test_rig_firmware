@@ -1,6 +1,6 @@
 # SPT Accelerometer Test Rig Firmware
 
-This is the firmware for a simple test rig for the LIS3DH
+This is the firmware for a simple test rig for the MMA8451
 accelerometer. The goal of the test rig is to help SPT
 understand movement data.
 
@@ -10,8 +10,8 @@ unit for acceleration). Note that this means two readings of the
 accelerometer and it's possible the logged values with vary slightly.
 
 This code doesn't compensate for jitter in the accelerometer. Given
-the low frquency of the readings (around once per second) and the
-10bit resolution of the LIS3DH, noise in the readigs in not likely
+the low frequency of the readings (around once per second) and the
+10bit resolution of the MMA8451, noise in the readings in not likely
 to be a significant factor in gaining insight into the general levels
 of activity.
 
@@ -19,7 +19,7 @@ of activity.
 
 First, clone this repo somewhere on your local drive. I recommend cloning it right into your Arduino sketchbook location (e.g. `~/Documents/Arudino` on OS X).
 
-This firmware was written in Arduino IDE 1.6.9, and is assumed to run on the [Adafruit Feather 32u4](https://www.adafruit.com/products/2771) with the [FeatherWing Adalogger](https://www.adafruit.com/products/2922) and a [LIS3DH accelerometer](https://www.adafruit.com/products/2809) attached to the I2C interface.
+This firmware was written in Arduino IDE 1.6.9, and is assumed to run on the [Adafruit Feather 32u4](https://www.adafruit.com/products/2771) with the [FeatherWing Adalogger](https://www.adafruit.com/products/2922) and a [MMA8451 accelerometer](https://www.adafruit.com/products/2019) attached to the I2C interface.
 
 ### Getting dependencies
 
@@ -34,7 +34,7 @@ Once you've done that, you'll be able to select the Feather 32u4 as a target boa
 You will also need to install some libraries. Select the `Sketch` menu and choose `Include Library` &rarr; `Manage Libraries…`. You need to install the following libraries:
 
 * RTClib
-* Adafruit LIS3DH
+* Adafruit MMA8451
 * Adafruit Unified Sensor
 
 Once these libraries are installed, close the Library Manager.

@@ -1,7 +1,7 @@
 /*
  * SPT Accelerometer Test Rig
  *
- * This is the firmware for a simple test rig for the LIS3DH
+ * This is the firmware for a simple test rig for the MMA8451
  * accelerometer. The goal of the test rig is to help SPT
  * understand movement data.
  *
@@ -12,7 +12,7 @@
  *
  * This code doesn't compensate for jitter in the accelerometer. Given
  * the low frquency of the readings (around once per second) and the
- * 10bit resolution of the LIS3DH, noise in the readigs in not likely
+ * 10bit resolution of the MMA8451, noise in the readigs in not likely
  * to be a significant factor in gaining insight into the general levels
  * of activity.
  *
@@ -83,15 +83,15 @@ void loop() {
 
   String raw = "";
   raw = raw + ra.x + "," + ra.y + "," + ra.z;
-  
+
   String msquared = "";
   msquared = msquared + a.x + "," + a.y + "," + a.z;
 
   String output = timestamp() + raw + "," + msquared;
-  
+
   writeToSD("accel.csv", output);
   Serial.println(output);
-  
+
   delay(1000); // log at ~1Hz
 }
 
