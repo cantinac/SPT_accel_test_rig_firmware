@@ -32,7 +32,7 @@
 #include <Wire.h>
 #include <SPI.h>
 #include <SD.h>
-#include <Adafruit_LIS3DH.h>
+#include <Adafruit_MMA8451.h>
 #include <Adafruit_Sensor.h>
 #include <RTClib.h>
 #include "datastructs.h"
@@ -43,8 +43,8 @@ const bool SERIAL_ENABLE = true;
 // chip select pin on the Adalogger FeatherWing with the 32u4
 const byte SDCS = 10;
 
-// Set up the LIS3DH with I2C
-Adafruit_LIS3DH accelerometer = Adafruit_LIS3DH();
+// Set up the MMA8451 with I2C
+Adafruit_MMA8451 accelerometer = Adafruit_MMA8451();
 
 // Set up the realtime clock
 RTC_DS1307 RTC;
@@ -62,11 +62,11 @@ void setup() {
   }
 
   // Attempt to start up the accelerometer
-  if (!accelerometer.begin(0x18)) {
+  if (!accelerometer.begin()) {
     writeLog("Accelerometer did not start");
     while(1);
   }
-  accelerometer.setRange(LIS3DH_RANGE_8_G); // starting at +-8G, but 2, 4, or 16 also possible
+  accelerometer.setRange(MMA8451_RANGE_8_G); // starting at +-8G, but 2, 4, or 16 also possible
 
   if (!SD.begin(SDCS)) {
     writeLog("SD card did not start");
@@ -83,18 +83,22 @@ void loop() {
 
   String raw = "";
   raw = raw + ra.x + "," + ra.y + "," + ra.z;
+  
   String msquared = "";
   msquared = msquared + a.x + "," + a.y + "," + a.z;
-  String output = raw + "," + msquared;
 
-  writeToSD("accel.csv", timestamp(raw));
+  String output = timestamp() + raw + "," + msquared;
+  
+  writeToSD("accel.csv", output);
+  Serial.println(output);
+  
   delay(1000); // log at ~1Hz
 }
 
 /*
  * Use the Adafuit Sensor Library to get the accelerometer reading in m/s^2
  */
-void readAccelerometerAsGs(Adafruit_LIS3DH *accel, Accel *a) {
+void readAccelerometerAsGs(Adafruit_MMA8451 *accel, Accel *a) {
   sensors_event_t event;
   accel->getEvent(&event);
   a->x = event.acceleration.x;
@@ -105,7 +109,7 @@ void readAccelerometerAsGs(Adafruit_LIS3DH *accel, Accel *a) {
 /*
  * Read the raw accelerometer values
  */
-void readAccelerometerRawValues(Adafruit_LIS3DH *accel, RawAccel *r) {
+void readAccelerometerRawValues(Adafruit_MMA8451 *accel, RawAccel *r) {
   accel->read();
   r->x = accel->x;
   r->y = accel->y;
@@ -116,13 +120,13 @@ void readAccelerometerRawValues(Adafruit_LIS3DH *accel, RawAccel *r) {
  * get a timetamp in seconds since UNIX epoch (Jan 1, 1970 00:00)
  * and push it to the front of the string
  */
-String timestamp(String s) {
+long timestamp() {
   DateTime now = RTC.now();
-  return now.unixtime() + "," + s;
+  return now.unixtime();
 }
 
 void writeLog(String s) {
-  String ts = timestamp(s);
+  String ts = timestamp() + s;
   if (SERIAL_ENABLE) {
     Serial.println(ts);
   }
