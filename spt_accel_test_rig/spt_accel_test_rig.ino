@@ -83,16 +83,15 @@ void loop() {
 
   String raw = "";
   raw = raw + ra.x + "," + ra.y + "," + ra.z;
-  
+
   String msquared = "";
   msquared = msquared + a.x + "," + a.y + "," + a.z;
 
   String output = timestamp() + raw + "," + msquared;
-  
+
   writeToSD("accel.csv", output);
   Serial.println(output);
 
-  writeToSD("accel.csv", timestamp(raw));
   delay(1000); // log at ~1Hz
 }
 
