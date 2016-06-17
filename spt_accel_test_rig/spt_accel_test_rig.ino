@@ -83,9 +83,14 @@ void loop() {
 
   String raw = "";
   raw = raw + ra.x + "," + ra.y + "," + ra.z;
+  
   String msquared = "";
   msquared = msquared + a.x + "," + a.y + "," + a.z;
-  String output = raw + "," + msquared;
+
+  String output = timestamp() + raw + "," + msquared;
+  
+  writeToSD("accel.csv", output);
+  Serial.println(output);
 
   writeToSD("accel.csv", timestamp(raw));
   delay(1000); // log at ~1Hz
@@ -116,13 +121,13 @@ void readAccelerometerRawValues(Adafruit_LIS3DH *accel, RawAccel *r) {
  * get a timetamp in seconds since UNIX epoch (Jan 1, 1970 00:00)
  * and push it to the front of the string
  */
-String timestamp(String s) {
+long timestamp() {
   DateTime now = RTC.now();
-  return now.unixtime() + "," + s;
+  return now.unixtime();
 }
 
 void writeLog(String s) {
-  String ts = timestamp(s);
+  String ts = timestamp() + s;
   if (SERIAL_ENABLE) {
     Serial.println(ts);
   }
