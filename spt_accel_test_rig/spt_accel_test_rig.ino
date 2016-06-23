@@ -47,16 +47,22 @@ const byte SDCS = 10;
 Adafruit_LIS3DH accelerometer = Adafruit_LIS3DH();
 
 // Set up the realtime clock
-RTC_DS1307 RTC;
+RTC_PCF8523 RTC;
+
+//LED Flip Flop
+int check = 0;
 
 void setup() {
   if (SERIAL_ENABLE) {
     Serial.begin(115200);
   }
 
+  //LED to indicate power
+  pinMode(13, OUTPUT);
+
   // Attempt to start up the realtime clock
   RTC.begin();
-  if (!RTC.isrunning()) {
+  if (!RTC.initialized()) {
     writeLog("RTC did not start");
     while(1);
   }
@@ -78,16 +84,29 @@ void loop() {
   RawAccel ra;
   Accel a;
 
+  if (check == 0){
+    digitalWrite(13, HIGH);
+    check = 1;
+  } else {
+    digitalWrite(13, LOW);
+    check = 0;
+  }
+
   readAccelerometerRawValues(&accelerometer, &ra);
   readAccelerometerAsGs(&accelerometer, &a);
 
   String raw = "";
   raw = raw + ra.x + "," + ra.y + "," + ra.z;
+
   String msquared = "";
   msquared = msquared + a.x + "," + a.y + "," + a.z;
-  String output = raw + "," + msquared;
 
-  writeToSD("accel.csv", timestamp(raw));
+  String output = "";
+  output = output + timestamp() + "," + raw + "," + msquared;
+
+  writeToSD("accel.csv", output);
+  Serial.println(output);
+
   delay(1000); // log at ~1Hz
 }
 
@@ -116,13 +135,13 @@ void readAccelerometerRawValues(Adafruit_LIS3DH *accel, RawAccel *r) {
  * get a timetamp in seconds since UNIX epoch (Jan 1, 1970 00:00)
  * and push it to the front of the string
  */
-String timestamp(String s) {
+long timestamp() {
   DateTime now = RTC.now();
-  return now.unixtime() + "," + s;
+  return now.unixtime();
 }
 
 void writeLog(String s) {
-  String ts = timestamp(s);
+  String ts = timestamp() + s;
   if (SERIAL_ENABLE) {
     Serial.println(ts);
   }
