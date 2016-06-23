@@ -100,10 +100,10 @@ void loop() {
 
   String msquared = "";
   msquared = msquared + a.x + "," + a.y + "," + a.z;
-
+  
   String output = "";
   output = output + timestamp() + "," + raw + "," + msquared;
-
+  
   writeToSD("accel.csv", output);
   Serial.println(output);
 
