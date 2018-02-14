@@ -11,7 +11,7 @@ accelerometer and it's possible the logged values with vary slightly.
 
 This code doesn't compensate for jitter in the accelerometer. Given
 the low frquency of the readings (around once per second) and the
-10bit resolution of the LIS3DH, noise in the readigs in not likely
+10bit resolution of the LIS3DH, noise in the readings is not likely
 to be a significant factor in gaining insight into the general levels
 of activity.
 
