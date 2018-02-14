@@ -66,7 +66,7 @@ void setup() {
     writeLog("Accelerometer did not start");
     while(1);
   }
-  accelerometer.setRange(MMA8451_RANGE_8_G); // starting at +-8G, but 2, 4, or 16 also possible
+  accelerometer.setRange(MMA8451_RANGE_8_G); // starting at +-8G, but 2 or 4 also possible
 
   if (!SD.begin(SDCS)) {
     writeLog("SD card did not start");
